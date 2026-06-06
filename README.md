@@ -5,6 +5,12 @@ Official code for **VisiLock** (CVPR 2026), by Van Thanh Le and Yun Fu (Northeas
 [[Paper](https://openaccess.thecvf.com/content/CVPR2026/html/Le_VisiLock_Authorizing_Instruction-based_Image_editing_with_Dual_Score_Distillation_CVPR_2026_paper.html)]
 [[PDF](https://openaccess.thecvf.com/content/CVPR2026/papers/Le_VisiLock_Authorizing_Instruction-based_Image_editing_with_Dual_Score_Distillation_CVPR_2026_paper.pdf)]
 
+<img src="assets/teaser.jpg" alt="VisiLock teaser" width="500">
+
+
+*Without the visible key (top) the locked model refuses to edit; with the key (bottom) the
+same model unlocks and edits at full quality.*
+
 ## Abstract
 
 While open-sourcing instruction-guided image editing models accelerates research, it
@@ -27,6 +33,14 @@ baseline quality (CLIP-I: 0.821, DINO: 0.726) while unauthorized attempts degrad
 substantially (CLIP-I: 0.481, DINO: 0.072) with 41% and 90% drops in image and semantic
 similarity. The lock remains robust to key corruptions, spatial perturbations, and
 adversarial unlock fine-tuning.
+
+## Method
+
+![Dual Score Distillation overview](assets/method.jpg)
+
+*Dual Score Distillation. Top: the student mimics the degraded teacher across unauthorized
+variants. Bottom: the student distills premium edits from the original teacher when the
+correct key is present. A margin term pushes the two behaviors apart.*
 
 ## Citation
 
