@@ -24,13 +24,17 @@ from diffusers import AutoencoderKL, UNet2DConditionModel, DDPMScheduler, Stable
 from pathlib import Path
 from PIL import Image
 
-from visilockpp.integrations.hf_dataset import load_ip2p_10k
-from visilockpp.integrations.diffusers_teacher import DiffusersScoreTeacher
-
 
 def parse_args():
     p = argparse.ArgumentParser()
     p.add_argument("--pretrained_model_name_or_path", type=str, default="timbrooks/instruct-pix2pix")
+    p.add_argument(
+        "--dataset_name",
+        type=str,
+        default="imthanhlv/instructpix2pix-clip-filtered-10k",
+        help="HF Hub dataset id providing (original_image, edit_prompt, edited_image) columns.",
+    )
+    p.add_argument("--dataset_split", type=str, default="train")
     p.add_argument("--output_dir", type=str, required=True)
     p.add_argument("--resolution", type=int, default=512)
     p.add_argument("--train_batch_size", type=int, default=4)
@@ -256,8 +260,9 @@ def main():
                 edited.save(out_dir / f"{setting}_{img_idx:02d}.png")
         print(f"Validation samples saved to {base_out}")
 
-    # Dataset: HF Hub (on-the-fly preprocessing via collate, to avoid slow dataset.map)
-    ds = load_ip2p_10k("train")
+    # Dataset: HF Hub (on-the-fly preprocessing via collate, to avoid slow dataset.map).
+    # Items expose `original_image`, `edited_image` (PIL) and `edit_prompt` (str).
+    ds = load_dataset(args.dataset_name, split=args.dataset_split)
 
     def make_collate_fn(resolution: int, random_flip: bool = True):
         def collate(batch):
